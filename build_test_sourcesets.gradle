@@ -1,0 +1,43 @@
+/**
+ * Provides a functional-test source set, so that unit tests and functional tests can
+ * be classpath separated. This can be useful where an embedded Jetty server for a unit test
+ * may end-up clashing with another Jetty server for a functional framework
+ */
+sourceSets {
+    functional {
+        groovy.srcDir file("src/functional/groovy")
+        resources.srcDir file("src/functional/resources")
+        compileClasspath += configurations.provided + sourceSets.test.compileClasspath
+        runtimeClasspath += configurations.provided + sourceSets.test.runtimeClasspath
+    }
+
+    test {
+        groovy.srcDir file("src/test/groovy")
+    }
+
+}
+
+task functional(type: Test, description: 'Runs the functional tests.', group: LifecycleBasePlugin.VERIFICATION_GROUP) {
+    testClassesDirs = sourceSets.functional.output.classesDirs
+    classpath = sourceSets.functional.runtimeClasspath
+
+    // Gradle skips tasks whose input and output are up to date. If you want to ensure that the functional tests are
+    // run every time when the functionalTest task is run, the following setting informs gradle to treat the task as out of date
+    outputs.upToDateWhen { false }
+
+    jacoco {
+        // switch it off as jacoco is causing functional tests to fail
+        // TODO uncomment once fix is made to jacoco plugin
+        enabled = false
+    }
+
+    testLogging {
+        exceptionFormat = "full"
+        events "passed", "skipped", "failed"
+    }
+
+    mustRunAfter test
+}
+
+
+check.dependsOn functional

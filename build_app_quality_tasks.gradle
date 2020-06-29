@@ -1,0 +1,86 @@
+apply plugin: 'checkstyle'
+apply plugin: 'com.github.spotbugs'
+apply plugin: 'jacoco'
+apply plugin: 'jdepend'
+apply plugin: 'pmd'
+apply plugin: 'org.sonarqube'
+apply plugin: 'auspost-snyk'
+
+
+sonarqube {
+    properties {
+        property "sonar.host.url", sonarHostURL
+        property 'sonar.projectKey', rootProject.ext.clonedGroupId
+        property 'sonar.projectName', rootProject.ext.clonedLongName
+        property 'sonar.projectVersion', rootProject.ext.clonedArtifactVersion
+        property 'sonar.jacoco.reportPath', 'build/jacoco/jacoco.exec'
+        property 'sonar.scm.disabled', true
+    }
+}
+
+pmd {
+    consoleOutput = true
+    ignoreFailures = true
+}
+
+//checkstyle
+checkstyle {
+    toolVersion = gradleCheckStylePlugin
+    sourceSets = [project.sourceSets.main]
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    configProperties.basedir = rootProject.projectDir
+}
+
+
+spotbugs {
+    sourceSets = [sourceSets.main]
+    excludeFilter = file("$rootProject.projectDir/config/spotbugs/excludeFilter.xml")
+}
+
+//jacoco
+jacoco {
+    toolVersion = jacocoPluginVersion
+}
+
+jacocoTestReport {
+    additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+    sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+    classDirectories = files(sourceSets.main.output)
+    reports {
+        html.enabled = true
+        xml.enabled = false
+        csv.enabled = false
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**/model/**',
+                                        '**/tibco/consumer/services/schema/**'])
+        })
+    }
+
+}
+
+test {
+    systemProperty 'proj_env', project.properties['env']
+    jacoco {
+        jvmArgs '-Dfile.encoding=UTF-8'
+        systemProperty 'file.encoding', 'UTF-8'
+        append = true
+        destinationFile = file("${rootProject.projectDir}/build/jacoco/jacoco.exec")
+        classDumpDir = file("${rootProject.projectDir}/build/jacoco/classpathdumps")
+    }
+
+    testLogging {
+        exceptionFormat = "full"
+        events "passed", "skipped", "failed"
+    }
+}
+
+snyk {
+    organisation = "mypost-consumer" // the snyk registered org
+    projectConfiguration = "compile"
+    severityThreshold = "medium"
+    breakBuild = "true"
+    unitTest = "false"
+}

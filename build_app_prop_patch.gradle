@@ -1,0 +1,25 @@
+/**
+ * Patches the application.yaml file with values from the build
+ */
+import org.apache.tools.ant.filters.ReplaceTokens
+processResources {
+
+    println "Substituting project @ext.params@ in application.yaml."
+
+    with copySpec {
+        from 'src/main/resources'
+        include '**/application*.yml'
+        include '**/application*.yaml'
+        include '**/application*.properties'
+        include '**/swagger.yml'
+        rootProject.ext.properties.each {
+            k, v ->
+                if (k.contains("cloned") && v != null) {
+                    println "substituting ${k}:${v}"
+                    filter(ReplaceTokens, tokens: [ (k): v])
+                    filter(ReplaceTokens, tokens: [ ('ext.' + k): v])
+                }
+        }
+    }
+}
+bootRun.dependsOn processResources

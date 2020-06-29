@@ -1,0 +1,103 @@
+buildscript {
+    ext {
+        clonedLongName = 'My Long Name API/MDI'
+        clonedDescription = 'My brief API/MDI description'
+        clonedAssetOwner = 'myTeamName'
+        clonedAssetGroup = 'myTrainOrTribe'
+        clonedPkg = 'myshrtname'
+        clonedGatewayPath = 'myshrtname'
+        clonedGroupId = 'au.com.acne.' + clonedAssetGroup + '.' + clonedPkg
+        clonedArtifactId = clonedAssetGroup + '-' + clonedPkg + '-api'
+        clonedArtifactVersion = version
+        clonedPackageName = 'au.com.acne.' + clonedAssetGroup + '.' + clonedPkg.replaceAll('-', '.')
+        clonedFrom = '2.1.39'
+    }
+
+//    nexus = {
+//        credentials {
+//            username nexusBuildUserToken
+//            password nexusBuildPassToken
+//        }
+//        url nexusRepoURL
+//    }
+
+    // This can be different for different enterprise repository
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("net.researchgate:gradle-release:$gradleReleasePluginVersion")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:$gradleGitPropertiesPluginVersion")
+        classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:$gradleSonarQubePluginVersion")
+        classpath("io.springfox:springfox-swagger2:$springfoxSwagger")
+        classpath("javax.xml.bind:jaxb-api:2.3.1") // JEE module for Corretto 11
+        classpath("gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:$spotBugsPluginVersion")
+    }
+}
+
+plugins {
+    id 'application'
+    id 'checkstyle'
+    id 'java'
+    id 'war'
+    id 'pmd'
+    id 'jacoco'
+    id 'idea'
+    id 'io.spring.dependency-management' version "${springBootDependencyManagement}"
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'org.owasp.dependencycheck' version "${owaspPluginVersion}"
+    id 'org.sonarqube' version "${sonarqubePluginVersion}"
+}
+
+jar {
+    enabled = true
+}
+
+// project artifact info
+group = clonedGroupId
+archivesBaseName = clonedArtifactId
+
+repositories {
+    // Replace with proper enterprise repo
+//    maven(nexus)
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-starter-json')
+
+    compile("org.codehaus.groovy:groovy-xml:${groovyPluginVersion}")
+    compile("org.codehaus.groovy:groovy-json:${groovyPluginVersion}")
+
+    // spock test dependencies
+    testCompile("cglib:cglib-nodep:${cgLibVersion}")
+    testCompile("com.mockrunner:mockrunner-jms:${mockRunnerPluginVersion}")
+    testCompile("io.javaslang:javaslang:2.0.6")
+    testCompile("org.assertj:assertj-core:${assertJLibVersion}")
+    testCompile("org.mockito:mockito-core:2.23.4")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+    // so that you can have groovy unit tests (change these to "functionalCompile" if you want to stick with java)
+    testCompile("org.codehaus.groovy:groovy-all:${groovyPluginVersion}")
+    testCompile("org.spockframework:spock-core:${spockPluginVersion}")
+    testCompile("org.spockframework:spock-spring:${spockPluginVersion}")
+
+    // functional dependencies
+    testCompile("com.github.tomakehurst:wiremock:${wiremockPluginVersion}") {
+        exclude group: "com.fasterxml.jackson.core"
+        exclude group: "org.apache.commons"
+        exclude module: "httpclient"
+        exclude module: "javax.servlet-api"
+    }
+    testCompile("org.codehaus.groovy:groovy-all:${groovyPluginVersion}")
+    testCompile("org.codehaus.groovy.modules.http-builder:http-builder:${httpBuilderPluginVersion}")
+    testCompile("org.spockframework:spock-core:${spockPluginVersion}")
+    testCompile("org.spockframework:spock-spring:${spockPluginVersion}")
+}

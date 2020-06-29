@@ -1,0 +1,19 @@
+task inferVersion {
+    if (project.hasProperty('env') && env == 'ci') {
+        String branch = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+        boolean isRelease = branch.startsWith("release-")
+
+        if (isRelease) {
+            project.version = "${branch - 'release-'}.${buildNumber}"
+        } else {
+            String latestTagRev = "git rev-list --tags --max-count=1".execute().text.trim()
+            String latestReleaseTag = "git describe --tags ${latestTagRev}".execute().text.trim()
+            project.version = "${latestReleaseTag}.${buildNumber}-${branch}"
+        }
+    }
+}
+tasks.compileJava.dependsOn tasks.inferVersion
+
+task artefactVersion {
+    println project.version
+}

@@ -1,0 +1,10 @@
+apply plugin: 'net.researchgate.release'
+
+release {
+    git {
+        requireBranch = /master|integration.*/
+    }
+}
+
+// only tag a release if the upload of the artefacts to Nexus was successful
+afterReleaseBuild.dependsOn uploadArchives

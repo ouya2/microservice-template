@@ -1,0 +1,29 @@
+// Include Implementation-Version to be used in logs
+bootWar.doFirst {
+    manifest {
+        attributes('Implementation-Title': rootProject.ext.clonedArtifactId,
+                'Implementation-Version': rootProject.ext.clonedArtifactVersion,
+                'Created-By': rootProject.ext.clonedAssetOwner,
+                'Built-By': System.getProperty('user.name'),
+                'Built-JDK': System.getProperty('java.version'),
+                'Build-Time': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'Source-Compatibility': project.sourceCompatibility,
+                'Target-Compatibility': project.targetCompatibility
+        )
+    }
+}
+
+// Include Implementation-Version to be used in logs
+bootJar.doFirst {
+    manifest {
+        attributes('Implementation-Title': rootProject.ext.clonedArtifactId,
+                'Implementation-Version': rootProject.ext.clonedArtifactVersion,
+                'Created-By': rootProject.ext.clonedAssetOwner,
+                'Built-By': System.getProperty('user.name'),
+                'Built-JDK': System.getProperty('java.version'),
+                'Build-Time': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'Source-Compatibility': project.sourceCompatibility,
+                'Target-Compatibility': project.targetCompatibility
+        )
+    }
+}
