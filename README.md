@@ -109,7 +109,7 @@ The project structure that comes by default with the template is as follows:
 
 ```
 build.gradle                   -- Gradle build script
-gradle.properties              -- Properties needed by build.gradle, e.g. Nexus credentials, dependency versions, etc.
+gradle.properties              -- Properties needed by build.gradle, e.g. dependency versions, etc.
 gradle/                        -- Gradle wrapper files (currently configured for Gradle v2.4)
   wrapper/
     gradle-wrapper.jar
@@ -187,7 +187,7 @@ The important thing to note about the above code is that the controller which is
 is important as all code should be placed downstream of the package where the `App` class which is defined as that's where
 the component scanning will start from.
 
-Also, because we're using a `@RestController` annotation instead of the `@Controller`, the methods don't need to be
+Also, because it is using a `@RestController` annotation instead of the `@Controller`, the methods don't need to be
 annotated with `@ResponseBody`.
 
 Other features that are available out of the box (i.e. without needing to add other dependencies) are:

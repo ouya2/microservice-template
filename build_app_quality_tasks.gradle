@@ -4,7 +4,6 @@ apply plugin: 'jacoco'
 apply plugin: 'jdepend'
 apply plugin: 'pmd'
 apply plugin: 'org.sonarqube'
-apply plugin: 'auspost-snyk'
 
 
 sonarqube {
@@ -75,12 +74,4 @@ test {
         exceptionFormat = "full"
         events "passed", "skipped", "failed"
     }
-}
-
-snyk {
-    organisation = "mypost-consumer" // the snyk registered org
-    projectConfiguration = "compile"
-    severityThreshold = "medium"
-    breakBuild = "true"
-    unitTest = "false"
 }
