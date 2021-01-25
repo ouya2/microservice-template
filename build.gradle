@@ -13,19 +13,11 @@ buildscript {
         clonedFrom = '2.1.39'
     }
 
-//    nexus = {
-//        credentials {
-//            username nexusBuildUserToken
-//            password nexusBuildPassToken
-//        }
-//        url nexusRepoURL
-//    }
-
     // This can be different for different enterprise repository
     repositories {
-        mavenLocal()
-        jcenter()
-        mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
 
     dependencies {
@@ -44,13 +36,17 @@ plugins {
     id 'checkstyle'
     id 'java'
     id 'war'
-    id 'pmd'
     id 'jacoco'
     id 'idea'
     id 'io.spring.dependency-management' version "${springBootDependencyManagement}"
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'org.owasp.dependencycheck' version "${owaspPluginVersion}"
     id 'org.sonarqube' version "${sonarqubePluginVersion}"
+}
+
+application {
+    // Define the main class for the application
+    mainClassName = "au.com.acne.myapi.App"
 }
 
 jar {
@@ -63,7 +59,6 @@ archivesBaseName = clonedArtifactId
 
 repositories {
     // Replace with proper enterprise repo
-//    maven(nexus)
     mavenCentral()
 }
 

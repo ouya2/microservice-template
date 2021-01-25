@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This file was added ostensibly to provide separate error log files in the application.
+    What appears to be the case is that this file is also required otherwise file logging does
+    not happen at all. We need to fix the lggging setup to make it more reliable
+-->
+
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+		<!-- appender INCORRECTLY referenced before it is defined -->
+		<appender-ref ref="STDOUT"/>
+	</root>
+
+</configuration>
+

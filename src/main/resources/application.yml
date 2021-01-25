@@ -1,0 +1,39 @@
+# Remember that any entry that you have in ea-config must be reflected here, even if it has nonsense content
+# The way Spring Boot property overriding works is that if you dont have an entry here, then that property wont be
+# brought in.
+
+spring:
+  application:
+    name: '@ext.clonedLongName@'
+
+logging:
+  file:
+    name: '@ext.clonedArtifactId@'
+  level:
+    org:
+      springframework: INFO
+    au:
+      com:
+        acne: DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+
+# You will nearly always require an endpoints section. This is commented out here because it concerns authorisation
+# configuration, which most microservices won't need. Comment back in, if you do.
+
+#endpoints:
+#  authServer:
+#    url:  "http://localhost:8082/mockauthz"
+#    health.endpoint: "/_admin/health"
+#    basicAuthUsername: "kong_admin"
+#    basicAuthPassword: "dontgopostal!!"
+#  azure:
+#    uri: https://login.microsoftonline.com/41afef0e-7a9e-4584-9dba-86c335624811
+#  authz:
+#    uri: https://digitalapi-ptest.npe.auspost.com.au/authz/v1
+#
+#
+#unauthenticated.paths: /_admin/health, /index, /index/, /error, /mockJwt
+
